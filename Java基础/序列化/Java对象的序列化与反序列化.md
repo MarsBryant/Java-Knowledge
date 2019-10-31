@@ -40,11 +40,11 @@ public class User implements Serializable {
     private static int age;
 
     public String getName() {
-        return name.toLowerCase();
+        return name;
     }
 
     public void setName(String name) {
-        this.name = name.toLowerCase();
+        this.name = name;
     }
 
     public int getAge() {
@@ -123,11 +123,11 @@ public class User1 implements Externalizable {
     }
 
     public String getName() {
-        return name.toLowerCase();
+        return name;
     }
 
     public void setName(String name) {
-        this.name = name.toLowerCase();
+        this.name = name;
     }
 
     public int getAge() {
@@ -220,11 +220,11 @@ public class User1 implements Externalizable {
     }
 
     public String getName() {
-        return name.toLowerCase();
+        return name;
     }
 
     public void setName(String name) {
-        this.name = name.toLowerCase();
+        this.name = name;
     }
 
     public int getAge() {
