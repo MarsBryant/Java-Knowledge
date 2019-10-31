@@ -37,21 +37,18 @@ User readUser = (User) ois.readObject();
 程序如下所示，定义一个User类，实现了Serializable接口
 ```Java
 import java.io.Serializable;
-import java.util.Date;
 
 public class User implements Serializable {
 
-    private static final long serialVersionUID = 1L;
     private String name;
-    private int age;
-    private Date birthday;
-    
+    private static int age;
+
     public String getName() {
-        return name;
+        return name.toLowerCase();
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = name.toLowerCase();
     }
 
     public int getAge() {
@@ -59,15 +56,7 @@ public class User implements Serializable {
     }
 
     public void setAge(int age) {
-        this.age = age;
-    }
-
-    public Date getBirthday() {
-        return birthday;
-    }
-
-    public void setBirthday(Date birthday) {
-        this.birthday = birthday;
+        User.age = age;
     }
 
     @Override
@@ -75,7 +64,6 @@ public class User implements Serializable {
         return "User{"
                 + "name='" + name + '\''
                 + ", age=" + age
-                + ", birthday=" + birthday
                 + '}';
     }
 }
@@ -87,39 +75,34 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Date;
 
 public class SerializableDemo {
-    public static void main(String[] args) {
-        User user = new User();
-        user.setName("mars");
-        user.setAge(22);
-        user.setBirthday(new Date());
-        System.out.println(user);
 
+    public static void main(String[] args) {
+        User user = new User("mars", 20);
+        System.out.println(user); // output: User{name='mars', age=20}
         ObjectOutputStream oos = null;
         try {
-            oos = new ObjectOutputStream(new FileOutputStream("tempFile"));
+            oos = new ObjectOutputStream(new FileOutputStream("user.txt"));
             oos.writeObject(user);
             oos.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         ObjectInputStream ois = null;
         try {
-            ois = new ObjectInputStream(new FileInputStream("tempFile"));
-            User newUser = (User)ois.readObject();
-            System.out.println(newUser);
+            ois = new ObjectInputStream(new FileInputStream("user.txt"));
+            User readUser = (User) ois.readObject();
+            System.out.println(readUser); // output: User{name='mars', age=20}
             ois.close();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+    }
 }
-//Output:
-//User{name='mars', age=22, birthday=Sat Oct 26 11:27:55 GMT+08:00 2019}
-//User{name='mars', age=23, birthday=Sat Oct 26 11:27:55 GMT+08:00 2019}
 ```
 ## 参考资料
 《疯狂Java讲义第四版》  
