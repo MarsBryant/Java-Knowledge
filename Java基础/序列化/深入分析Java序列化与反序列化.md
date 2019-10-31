@@ -416,6 +416,116 @@ public class SerializableDemo {
     }
 }
 ```
+### 自定义序列化
+如果一个类里包含的某些实例变量是敏感信息，序列化对象中有一些是敏感，如密码等，希望对该密码字段在序列化时，进行加密，在反序列化时拥有解密的密钥，才可以对密码进行读取，程序可以进行自定义序列化和反序列化,使用如下方法：
+```Java
+private void writeObject(ObjectOutputStream out) throws IOException
+private void readObject(ObjectInputStream in) throws IOException,ClassNotFoundException
+```
+```java
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
+public class User implements Serializable {
+
+   public static final long serialVersionUID = 1L;
+
+    private String name;
+    private int age;
+    private String password;
+
+    public User(String name, int age, String password) {
+        this.name = name;
+        this.age = age;
+        this.password = password;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public String getPassword() {
+        return name;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        //将password翻转后写入二进制流，模拟加密
+        out.writeObject(new StringBuffer(password).reverse());
+        out.writeObject(name);
+        out.writeInt(age);
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException,ClassNotFoundException {
+        //将读取的字符串翻转后赋值给password，模拟解密
+        this.password = ((StringBuffer)in.readObject()).reverse().toString();
+        this.name = (String)in.readObject();
+        this.age = in.readInt();
+    }
+
+    @Override
+    public String toString() {
+        return "User{"
+                + "name='" + name + '\''
+                + ", age=" + age
+                + ", password=" + password
+                + '}';
+    }
+}
+```
+```Java
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
+public class SerializableDemo {
+
+    public static void main(String[] args) {
+        User user = new User("mars", 20,"123456");
+        System.out.println(user); // output: User{name='mars', age=20, password=123456}
+        ObjectOutputStream oos = null;
+        try {
+            oos = new ObjectOutputStream(new FileOutputStream("user.txt"));
+            oos.writeObject(user);
+            oos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        ObjectInputStream ois = null;
+        try {
+            ois = new ObjectInputStream(new FileInputStream("user.txt"));
+            User readUser = (User) ois.readObject();
+            System.out.println(readUser); // output: User{name='mars', age=20, password=123456}
+            ois.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
 ## 参考资料
 《疯狂Java讲义第四版》  
 [深入分析Java的序列化与反序列化](https://www.hollischuang.com/archives/1140)  
