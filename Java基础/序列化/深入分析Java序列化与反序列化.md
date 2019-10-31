@@ -422,6 +422,7 @@ public class SerializableDemo {
 private void writeObject(ObjectOutputStream out) throws IOException
 private void readObject(ObjectInputStream in) throws IOException,ClassNotFoundException
 ```
+在序列化和反序列化过程中，如果被序列化的类中定义了writeObject和readObject方法，虚拟机会调用对象类里的writeObject和readObject方法，进行自定义序列化和反序列化操作。如果没有定义，默认调用ObjectOutputStream.defaultWriteObject和ObjectInputStream.defaultReadObject方法。
 ```java
 import java.io.IOException;
 import java.io.ObjectInputStream;
