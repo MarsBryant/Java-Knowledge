@@ -9,10 +9,6 @@ Java提供了一套接口来支持序列化和反序列化
 ```Java
 java.io.Serializable
 java.io.Externalizable
-ObjectOutput
-ObjectInput
-ObjectOutputStream
-ObjectInputStream
 ```
 ### Serializable
 类通过实现java.io.Serializable接口来实现序列化功能。该接口是一个标记接口，实现该接口无需实现任何方法，它只是表明该类的实例是可序列化的。  
@@ -301,6 +297,11 @@ public class ExternalizableDemo {
 //User{name='mars', age=20}
 ```
 执行代码时候发现，会调用User1的无参构造器。当使用Externalizable机制反序列化的时候，会先使用public的无参构造器创建实例，然后才调用readExternal()方法进行反序列化。因此实现Externalizable的类必须提供public的无参构造器，否则会报no valid constructor错误。
+## Transient关键字
+通过在实例变量前面使用transient关键字修饰，可以指定Java序列化时无需理会该实例变量。  
+## 版本
+java序列化机制允许为序列化类提供一个序列化ID(private static final long serialVersionUID)，该变量的值用来标识该Java类的序列化版本。如果一个类升级后，只要它的serialVersionUID类变量的值没有改变，序列化机制会把它们当成同一个序列化版本。  
+序列化ID有两种生成策略，一个是固定的1L，一个是随机生成一个不重复的long类型数据(由JVM根据类的相关信息计算得出)。没有特殊要求，默认1L即可。
 ## 参考资料
 《疯狂Java讲义第四版》  
 [Java对象的序列化与反序列化](https://www.hollischuang.com/archives/1150)  
